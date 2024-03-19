@@ -1,0 +1,122 @@
+/* Created By: AK1R4S4T0H */
+/* Global Styles */
+QWidget {
+    background-color: #292929;
+    color: #FFFFFF;
+    
+}
+
+/* QLabel Styles */
+QLabel {
+    color: #FFFFFF;
+    font-size: 12px;
+    border: 1px outset #4c4c4c;
+    border-radius: 5px;
+}
+
+/* QTextEdit Styles */
+QTextEdit, QPlainTextEdit, QLineEdit {
+    color: #ffffff;
+    background-color: #4c4c4c;
+    font-size: 14px;
+}
+
+/* QPushButton Styles */
+QPushButton {
+    color: #FFFFFF;
+    background-color: #165753;
+    font-size: 12px;
+    padding: 5px;
+}
+
+QPushButton:hover {
+    background-color: #367783;
+}
+
+QPushButton:pressed {
+    background-color: #263733;
+}
+
+QPushButton:disabled {
+    background-color: #616161;
+}
+
+/* QFileDialog Styles */
+QFileDialog {
+    background-color: #292929;
+    color: #FFFFFF;
+}
+
+QFileDialog QPushButton{
+    color: #FFFFFF;
+    background-color: #9C27B0;
+    font-size: 12px;
+    padding: 5px;
+}
+
+QFileDialog QPushButton:hover {
+    background-color: #7B1FA2;
+}
+
+QFileDialog QPushButton:pressed {
+    background-color: #4A148C;
+}
+
+/* QMenu */
+QMenu {
+    color: #FFFFFF;
+    background-color: #292929;
+    font-size: 12px;
+    padding: 5px;
+}
+QMenu:hover {
+    background-color: #266754;
+}
+QMenu:pressed {
+    background-color: #162734;
+}
+
+/* QMessageBox Styles */
+QMessageBox {
+    background-color: #292929;
+    color: #FFFFFF;
+}
+
+QMessageBox QLabel {
+    color: #FFFFFF;
+    font-size: 12px;
+}
+
+QMessageBox QPushButton {
+    color: #FFFFFF;
+    background-color: #9C27B0;
+    font-size: 12px;
+    padding: 5px;
+}
+
+QMessageBox QPushButton:hover {
+    background-color: #7B1FA2;
+}
+
+QMessageBox QPushButton:pressed {
+    background-color: #4A148C;
+}
+
+QProgressBar {
+    background-color: #263733;
+    color: #bbddbb;
+    border: 2px outset black;
+    padding: 2px;
+    text-align: center;
+
+}
+QCheckBox {
+    background-color: #263733;
+    color: #bbddbb;
+    border: 2px outset black;
+    padding: 2px;
+
+}
+/* Other Styles */
+/* Add other widget styles here if needed */
+

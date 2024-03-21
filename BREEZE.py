@@ -15,7 +15,6 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle("BREEZE.Music")
 
-        # Create the central widget and set its layout
         central_widget = QWidget()
         central_layout = QVBoxLayout()
         central_widget.setLayout(central_layout)

@@ -27,6 +27,9 @@ class Audio(QMainWindow):
             }
         """)
 
+
+        
+
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
 
@@ -133,6 +136,8 @@ class Audio(QMainWindow):
         palette.setColor(QPalette.HighlightedText, QColor("#FFFFFF"))
         self.setPalette(palette)
 
+        
+
     def browse_folder(self):
         folder_path = QFileDialog.getExistingDirectory(self, "Select Folder")
         if folder_path:
@@ -161,6 +166,7 @@ class Audio(QMainWindow):
             if self.file_path:
                 pygame.mixer.music.load(self.file_path)
                 pygame.mixer.music.play()
+                
 
     def pause(self):
         if pygame.mixer.music.get_busy() and not self.paused:
@@ -171,6 +177,7 @@ class Audio(QMainWindow):
     def stop(self):
         pygame.mixer.music.stop()
         self.paused = False
+        self.end_event_timer.stop()
 
     def forward(self):
         if pygame.mixer.music.get_busy() and not self.paused:
@@ -204,6 +211,10 @@ class Audio(QMainWindow):
             event.accept()
         else:
             event.ignore()
+
+    def handle_end_event(self):
+        if pygame.mixer.music.get_busy() == 0:
+            self.forward()
 
 
 if __name__ == "__main__":

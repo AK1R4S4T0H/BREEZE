@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+#!/bin/zsh
 
 venv_name="BREEZE"
 
@@ -18,5 +19,8 @@ chmod +x BREEZE.py || { echo "Failed to make BREEZE.py executable."; exit 1; }
 
 echo 'export PATH="$PATH:$(pwd)"' >> ~/.bashrc
 source ~/.bashrc
+
+echo 'export PATH="$PATH:$(pwd)"' >> ~/.zshrc
+source ~/.zshrc
 
 echo "Installation completed. You can now run BREEZE.py."

@@ -119,15 +119,15 @@ class Audio(QMainWindow):
         layout.addWidget(self.volume_label, 5, 0)
         layout.addWidget(self.volume_slider, 6, 0, 2, 3)
 
-        # Variables
+
         self.file_path = None
         self.paused = False
         self.paused_pos = 0
 
-        # Init pygame mixer
+
         pygame.mixer.init()
 
-        # Set colors
+
         palette = self.palette()
         palette.setColor(QPalette.Window, QColor("#7733EE"))
         palette.setColor(QPalette.Button, QColor("#7777EE"))
@@ -146,7 +146,7 @@ class Audio(QMainWindow):
 
     def load_songs(self, folder_path):
         self.song_list_widget.clear()
-        files = QDir(folder_path).entryList(["*.mp3", "*.wav", "*.ogg", "*.xm", "*.mod", "*.it"], QDir.Files)
+        files = QDir(folder_path).entryList(["*.mp3", "*.wav", "*.ogg", "*.xm", "*.mod", "*.it", "*.mid"], QDir.Files)
         for file in files:
             song_path = os.path.join(folder_path, file)
             name = song_path.split("/")[-1]

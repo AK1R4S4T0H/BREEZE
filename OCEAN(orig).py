@@ -16,7 +16,7 @@ class Waves(QObject):
         BLOCK_SIZE = 512
 
         # Visualization settings
-        SCREEN_WIDTH = 400
+        SCREEN_WIDTH = 300
         SCREEN_HEIGHT = 200
         BACKGROUND_COLOR = (0, 0, 0)
         NUM_WAVEFORMS = 7
@@ -54,7 +54,7 @@ class Waves(QObject):
             audio_data = indata.mean(axis=1)
             audio_data = np.interp(np.linspace(0, len(audio_data) + 1 / 1, self.SCREEN_WIDTH),
                                    np.arange(len(audio_data)), audio_data)
-            scaled_data = audio_data * (self.SCREEN_HEIGHT / 1) + (self.SCREEN_HEIGHT / 5)
+            scaled_data = audio_data * (self.SCREEN_HEIGHT / 1) + (self.SCREEN_HEIGHT / 20)
 
             waveforms = [scaled_data * (i + 1) / self.NUM_WAVEFORMS for i in range(self.NUM_WAVEFORMS)]
 

@@ -6,7 +6,8 @@ from PySide6.QtGui import QIcon, QColor, QPalette, QFont
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QLabel,
     QPushButton, QFileDialog, QStyleFactory, QSlider,
-    QMessageBox, QGridLayout, QLineEdit, QListWidget, QListWidgetItem
+    QMessageBox, QGridLayout, QLineEdit, QListWidget,
+    QListWidgetItem, QSizePolicy
 )
 
 os.environ['QT_QPA_PLATFORM'] = 'xcb'
@@ -26,9 +27,6 @@ class Audio(QMainWindow):
                 background-color: #DD33DD;
             }
         """)
-
-
-        
 
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
@@ -104,7 +102,11 @@ class Audio(QMainWindow):
         self.song_picker = QLineEdit(self)
         self.song_picker.setReadOnly(True)
 
+        
         self.song_list_widget = QListWidget(self)
+        self.song_list_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.song_list_widget.setMinimumHeight(20)  
+        self.song_list_widget.setMaximumHeight(100)
         self.song_list_widget.itemClicked.connect(self.select_song)
 
         layout.addWidget(self.file_label, 0, 0, 1, 3)
@@ -119,15 +121,15 @@ class Audio(QMainWindow):
         layout.addWidget(self.volume_label, 5, 0)
         layout.addWidget(self.volume_slider, 6, 0, 2, 3)
 
-
+        # Variables
         self.file_path = None
         self.paused = False
         self.paused_pos = 0
 
-
+        # Init pygame mixer
         pygame.mixer.init()
 
-
+        # Set colors
         palette = self.palette()
         palette.setColor(QPalette.Window, QColor("#7733EE"))
         palette.setColor(QPalette.Button, QColor("#7777EE"))
@@ -135,8 +137,6 @@ class Audio(QMainWindow):
         palette.setColor(QPalette.Highlight, QColor("#DD33DD"))
         palette.setColor(QPalette.HighlightedText, QColor("#FFFFFF"))
         self.setPalette(palette)
-
-        
 
     def browse_folder(self):
         folder_path = QFileDialog.getExistingDirectory(self, "Select Folder")
@@ -146,7 +146,7 @@ class Audio(QMainWindow):
 
     def load_songs(self, folder_path):
         self.song_list_widget.clear()
-        files = QDir(folder_path).entryList(["*.mp3", "*.wav", "*.ogg", "*.xm", "*.mod", "*.it", "*.mid"], QDir.Files)
+        files = QDir(folder_path).entryList(["*.mp3", "*.mod", "*.wav", "*.ogg", "*.it","*.xm", "*.s3m", "*.pt3"], QDir.Files)
         for file in files:
             song_path = os.path.join(folder_path, file)
             name = song_path.split("/")[-1]
@@ -166,7 +166,6 @@ class Audio(QMainWindow):
             if self.file_path:
                 pygame.mixer.music.load(self.file_path)
                 pygame.mixer.music.play()
-                
 
     def pause(self):
         if pygame.mixer.music.get_busy() and not self.paused:
@@ -177,7 +176,6 @@ class Audio(QMainWindow):
     def stop(self):
         pygame.mixer.music.stop()
         self.paused = False
-        self.end_event_timer.stop()
 
     def forward(self):
         if pygame.mixer.music.get_busy() and not self.paused:
@@ -211,10 +209,6 @@ class Audio(QMainWindow):
             event.accept()
         else:
             event.ignore()
-
-    def handle_end_event(self):
-        if pygame.mixer.music.get_busy() == 0:
-            self.forward()
 
 
 if __name__ == "__main__":

@@ -24,13 +24,14 @@ class Waves(QObject):
         WAVEFORM_COLORS = [(255, 120, 0), (255, 200, 0), (0, 255, 100), (0, 150, 255), (0, 0, 255), (255, 0, 255),
                            (255, 255, 255)]
         LINE_WIDTH = 1
+        INTENSITY = 20
 
         # Frequencies
-        FREQUENCIES = [[60, 261.63], [262, 493.66], [494, 929.63], [930, 1449.23], [1450, 2292.00], [2293, 2640.00],
+        FREQUENCIES = [[20, 221.63], [222, 493.66], [494, 929.63], [930, 1449.23], [1450, 2292.00], [2293, 2640.00],
                        [2641, 3193.88]]
 
         # Frequency settings
-        LOW_FREQ = 60
+        LOW_FREQ = 20
         HIGH_FREQ = 3000
         NUM_FREQ_BINS = 1700
 
@@ -46,7 +47,6 @@ class Waves(QObject):
 
             self.setMinimumSize(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
 
-            # Use selected input device or fallback to default device
             self.device = input_device
             self.stream = sd.InputStream(callback=self.audio_capture_callback, channels=self.CHANNELS,
                                          samplerate=self.SAMPLE_RATE,
@@ -86,6 +86,42 @@ class Waves(QObject):
 
                 waveform_points = [QPointF(x, y + y_offset) for x, y in enumerate(scaled_waveform)]
                 painter.drawPolyline(waveform_points)
+
+                y_offset = int(i * waveform_height / 300 + waveform_height // 300000)
+                scaled_waveform = waveform * (i + 15) / self.NUM_WAVEFORMS
+                freq_range = list(self.waveform_freq_ranges)[i]
+
+                waveform_points = [QPointF(x, y + y_offset) for x, y in enumerate(scaled_waveform)]
+                painter.drawPolyline(waveform_points)
+
+                y_offset = int(i * waveform_height / 300 + waveform_height // 300000)
+                scaled_waveform = waveform * (i + 45) / self.NUM_WAVEFORMS
+                freq_range = list(self.waveform_freq_ranges)[i]
+
+                waveform_points = [QPointF(x, y + y_offset) for x, y in enumerate(scaled_waveform)]
+                painter.drawPolyline(waveform_points)
+
+                y_offset = int(i * waveform_height / 300 + waveform_height // 300000)
+                scaled_waveform = waveform * (i + 75) / self.NUM_WAVEFORMS
+                freq_range = list(self.waveform_freq_ranges)[i]
+
+                waveform_points = [QPointF(x, y + y_offset) for x, y in enumerate(scaled_waveform)]
+                painter.drawPolyline(waveform_points)
+
+                y_offset = int(i * waveform_height / 300 + waveform_height // 300000)
+                scaled_waveform = waveform * (i + 95) / self.NUM_WAVEFORMS
+                freq_range = list(self.waveform_freq_ranges)[i]
+
+                waveform_points = [QPointF(x, y + y_offset) for x, y in enumerate(scaled_waveform)]
+                painter.drawPolyline(waveform_points)
+
+                y_offset = int(i * waveform_height + waveform_height // 300000)
+                scaled_waveform = waveform * (i + 25) / self.NUM_WAVEFORMS  # Adjust the scaling factor
+
+                waveform_points = [QPointF(x, y + y_offset) for x, y in enumerate(scaled_waveform)]
+                painter.drawPolyline(waveform_points)
+
+
 
         def closeEvent(self, event):
             self.stream.stop()

@@ -4,10 +4,11 @@ import numpy as np
 import sounddevice as sd
 import pygame
 from PySide6.QtCore import Qt, QThread, Signal, QPointF, QObject
-from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout
+from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QComboBox, QLabel
 from PySide6.QtGui import QPainter, QColor, QPen, QPaintEvent
 
 os.environ['QT_QPA_PLATFORM'] = 'xcb'
+
 class Waves(QObject):
     class WaveformWidget(QWidget):
         # Audio settings
@@ -40,14 +41,16 @@ class Waves(QObject):
 
         pygame.init()
 
-        def __init__(self, parent=None):
+        def __init__(self, parent=None, input_device=None):
             super().__init__(parent)
 
             self.setMinimumSize(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
 
+            # Use selected input device or fallback to default device
+            self.device = input_device
             self.stream = sd.InputStream(callback=self.audio_capture_callback, channels=self.CHANNELS,
                                          samplerate=self.SAMPLE_RATE,
-                                         blocksize=self.BLOCK_SIZE, device="pulse")
+                                         blocksize=self.BLOCK_SIZE, device=self.device)
             self.stream.start()
 
         def audio_capture_callback(self, indata, frames, time, status):
@@ -84,41 +87,6 @@ class Waves(QObject):
                 waveform_points = [QPointF(x, y + y_offset) for x, y in enumerate(scaled_waveform)]
                 painter.drawPolyline(waveform_points)
 
-                y_offset = int(i * waveform_height / 300 + waveform_height // 300000)
-                scaled_waveform = waveform * (i + 15) / self.NUM_WAVEFORMS
-                freq_range = list(self.waveform_freq_ranges)[i]
-
-                waveform_points = [QPointF(x, y + y_offset) for x, y in enumerate(scaled_waveform)]
-                painter.drawPolyline(waveform_points)
-
-                y_offset = int(i * waveform_height / 300 + waveform_height // 300000)
-                scaled_waveform = waveform * (i + 45) / self.NUM_WAVEFORMS
-                freq_range = list(self.waveform_freq_ranges)[i]
-
-                waveform_points = [QPointF(x, y + y_offset) for x, y in enumerate(scaled_waveform)]
-                painter.drawPolyline(waveform_points)
-
-                y_offset = int(i * waveform_height / 300 + waveform_height // 300000)
-                scaled_waveform = waveform * (i + 75) / self.NUM_WAVEFORMS
-                freq_range = list(self.waveform_freq_ranges)[i]
-
-                waveform_points = [QPointF(x, y + y_offset) for x, y in enumerate(scaled_waveform)]
-                painter.drawPolyline(waveform_points)
-
-                y_offset = int(i * waveform_height / 300 + waveform_height // 300000)
-                scaled_waveform = waveform * (i + 95) / self.NUM_WAVEFORMS
-                freq_range = list(self.waveform_freq_ranges)[i]
-
-                waveform_points = [QPointF(x, y + y_offset) for x, y in enumerate(scaled_waveform)]
-                painter.drawPolyline(waveform_points)
-
-                y_offset = int(i * waveform_height + waveform_height // 300000)
-                scaled_waveform = waveform * (i + 25) / self.NUM_WAVEFORMS  # Adjust the scaling factor
-
-                waveform_points = [QPointF(x, y + y_offset) for x, y in enumerate(scaled_waveform)]
-                painter.drawPolyline(waveform_points)
-
-
         def closeEvent(self, event):
             self.stream.stop()
             self.stream.close()
@@ -142,7 +110,16 @@ class Waves(QObject):
             self.setWindowTitle("Waveform Visualization")
 
             self.waveform_widget = Waves.WaveformWidget()
+
+            # Audio device selection
+            self.device_label = QLabel("Select Audio Device:")
+            self.device_combo = QComboBox()
+            self.device_combo.addItems(self.get_audio_devices())
+            self.device_combo.currentIndexChanged.connect(self.device_changed)
+
             layout = QVBoxLayout()
+            layout.addWidget(self.device_label)
+            layout.addWidget(self.device_combo)
             layout.addWidget(self.waveform_widget)
 
             central_widget = QWidget()
@@ -154,6 +131,24 @@ class Waves(QObject):
             self.audio_capture_thread.capture_stopped.connect(self.capture_stopped)
             self.audio_capture_thread.start()
 
+        def get_audio_devices(self):
+            # Get a list of available audio input devices
+            devices = sd.query_devices()
+            input_devices = [device['name'] for device in devices if device['max_input_channels'] > 0]
+            return input_devices
+
+        def device_changed(self):
+            # When device selection changes, restart the stream with the selected device
+            selected_device = self.device_combo.currentText()
+            self.waveform_widget.stream.stop()
+            self.waveform_widget.stream.close()
+            self.waveform_widget.stream = sd.InputStream(callback=self.waveform_widget.audio_capture_callback,
+                                                        channels=self.waveform_widget.CHANNELS,
+                                                        samplerate=self.waveform_widget.SAMPLE_RATE,
+                                                        blocksize=self.waveform_widget.BLOCK_SIZE,
+                                                        device=selected_device)
+            self.waveform_widget.stream.start()
+
         def capture_started(self):
             print("Audio capture started.")
 
@@ -163,7 +158,6 @@ class Waves(QObject):
         def closeEvent(self, event):
             self.audio_capture_thread.quit()
             self.audio_capture_thread.wait()
-
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
